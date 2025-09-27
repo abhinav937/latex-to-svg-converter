@@ -75,7 +75,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: LaTeX-SVG-Converter-Linux
-        path: dist/latex_svg_converter
+        path: dist/Latex_to_SVG
 
   release:
     needs: [build-windows, build-macos, build-linux]
@@ -88,7 +88,7 @@ jobs:
     - name: Prepare Linux asset
       run: |
         cd LaTeX-SVG-Converter-Linux
-        tar -czf latex_svg_converter-linux.tar.gz latex_svg_converter/
+        tar -czf Latex_to_SVG-linux.tar.gz Latex_to_SVG/
 
     - name: Upload release assets
       uses: softprops/action-gh-release@v2
@@ -101,7 +101,7 @@ jobs:
         files: |
           LaTeX-SVG-Converter-Windows/LaTeX-SVG-Converter-Windows.zip
           LaTeX-SVG-Converter-macOS/LaTeX-SVG-Converter-macOS.dmg
-          LaTeX-SVG-Converter-Linux/latex_svg_converter-linux.tar.gz
+          LaTeX-SVG-Converter-Linux/Latex_to_SVG-linux.tar.gz
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

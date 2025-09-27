@@ -40,8 +40,8 @@ def build_executable():
         "python3", "-m", "PyInstaller",
         "--onedir",  # Create a directory (faster than --onefile)
         "--windowed",  # Don't show console window (for GUI apps)
-        "--name=latex_svg_converter",
-        # "--icon=icon.ico" if system == "windows" else "--icon=icon.icns",  # Icon if available
+        "--name=Latex_to_SVG",
+        "--icon=icon.svg",
         "web_embedder.py"
     ]
 
@@ -72,7 +72,7 @@ def create_installer():
     elif system == "darwin":
         # For macOS, create a .dmg file
         print("\nCreating Creating macOS distribution...")
-        app_path = "dist/latex_svg_converter.app"
+        app_path = "dist/Latex_to_SVG.app"
         dmg_path = "LaTeX-SVG-Converter-macOS.dmg"
 
         if os.path.exists(app_path):
@@ -170,12 +170,12 @@ def main():
     system = platform.system().lower()
     if system == "windows":
         print("  - LaTeX-SVG-Converter-Windows.zip (ready for distribution)")
-        print("  - dist/latex_svg_converter/ (local testing)")
+        print("  - dist/Latex_to_SVG/ (local testing)")
     elif system == "darwin":
         print("  - LaTeX-SVG-Converter-macOS.dmg (ready for distribution)")
-        print("  - dist/latex_svg_converter.app (local testing)")
+        print("  - dist/Latex_to_SVG.app (local testing)")
     else:
-        print("  - dist/latex_svg_converter/ (ready for distribution)")
+        print("  - dist/Latex_to_SVG/ (ready for distribution)")
 
     print("\nUpload the distribution files to GitHub Releases!")
 
