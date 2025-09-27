@@ -17,9 +17,6 @@ jobs:
     if: github.event_name == 'push' || github.event_name == 'release'
     steps:
     - uses: actions/checkout@v4
-    - name: Convert icon to PNG
-      run: |
-        python3 -c "import cairosvg; cairosvg.svg2png(url='icon.svg', write_to='icon.png', output_width=256, output_height=256)"
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
@@ -27,7 +24,7 @@ jobs:
     - name: Install dependencies
       run: |
         python3 -m pip install --upgrade pip
-        python3 -m pip install pyinstaller PySide6 Pillow cairosvg
+        python3 -m pip install pyinstaller PySide6 Pillow
     - name: Build executable
       run: python build.py
     - name: Upload artifact
@@ -41,9 +38,6 @@ jobs:
     if: github.event_name == 'push' || github.event_name == 'release'
     steps:
     - uses: actions/checkout@v4
-    - name: Convert icon to PNG
-      run: |
-        python3 -c "import cairosvg; cairosvg.svg2png(url='icon.svg', write_to='icon.png', output_width=256, output_height=256)"
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
@@ -51,7 +45,7 @@ jobs:
     - name: Install dependencies
       run: |
         python3 -m pip install --upgrade pip
-        python3 -m pip install pyinstaller PySide6 Pillow cairosvg
+        python3 -m pip install pyinstaller PySide6 Pillow
     - name: Build executable
       run: python build.py
     - name: Upload artifact

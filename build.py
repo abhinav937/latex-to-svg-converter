@@ -41,9 +41,17 @@ def build_executable():
         "--onedir",  # Create a directory (faster than --onefile)
         "--windowed",  # Don't show console window (for GUI apps)
         "--name=Latex_to_SVG",
-        "--icon=icon.png",
-        "web_embedder.py"
     ]
+
+    # Add platform-specific icon
+    if system == "windows":
+        cmd.append("--icon=icons/icon.ico")
+    elif system == "darwin":  # macOS
+        cmd.append("--icon=icons/icon.icns")
+    else:  # Linux and others
+        cmd.append("--icon=icons/icon.png")
+
+    cmd.append("web_embedder.py")
 
     # macOS specific options
     if system == "darwin":

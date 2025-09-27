@@ -2,7 +2,9 @@
 
 Convert LaTeX mathematical equations to SVG format.
 
-![LaTeX to SVG Icon](icon.svg)
+![LaTeX to SVG Icon](icons/icon.png)
+
+**Icons included:** PNG, ICO (Windows), ICNS (macOS)
 
 ## Installation
 
