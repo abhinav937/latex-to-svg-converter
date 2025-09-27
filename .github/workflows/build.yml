@@ -24,7 +24,7 @@ jobs:
     - name: Install dependencies
       run: |
         python3 -m pip install --upgrade pip
-        python3 -m pip install pyinstaller PySide6
+        python3 -m pip install pyinstaller PySide6 Pillow
     - name: Build executable
       run: python build.py
     - name: Upload artifact
@@ -45,7 +45,7 @@ jobs:
     - name: Install dependencies
       run: |
         python3 -m pip install --upgrade pip
-        python3 -m pip install pyinstaller PySide6
+        python3 -m pip install pyinstaller PySide6 Pillow
     - name: Build executable
       run: python build.py
     - name: Upload artifact
