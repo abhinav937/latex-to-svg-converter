@@ -11,6 +11,7 @@ on:
 jobs:
   build-windows:
     runs-on: windows-latest
+    if: github.event_name == 'push' || github.event_name == 'release'
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python
@@ -31,6 +32,7 @@ jobs:
 
   build-macos:
     runs-on: macos-latest
+    if: github.event_name == 'push' || github.event_name == 'release'
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python
@@ -51,6 +53,7 @@ jobs:
 
   build-linux:
     runs-on: ubuntu-latest
+    if: github.event_name == 'push' || github.event_name == 'release'
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python
