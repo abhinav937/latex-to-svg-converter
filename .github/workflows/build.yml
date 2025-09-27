@@ -8,14 +8,17 @@ on:
   release:
     types: [published]
 
+permissions:
+  contents: write
+
 jobs:
   build-windows:
     runs-on: windows-latest
     if: github.event_name == 'push' || github.event_name == 'release'
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: '3.9'
     - name: Install dependencies
@@ -34,9 +37,9 @@ jobs:
     runs-on: macos-latest
     if: github.event_name == 'push' || github.event_name == 'release'
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: '3.9'
     - name: Install dependencies
@@ -55,9 +58,9 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'push' || github.event_name == 'release'
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: '3.9'
     - name: Install dependencies
@@ -77,18 +80,28 @@ jobs:
   release:
     needs: [build-windows, build-macos, build-linux]
     runs-on: ubuntu-latest
-    if: github.event_name == 'release'
+    if: github.event_name == 'push' || github.event_name == 'release'
     steps:
     - name: Download all artifacts
       uses: actions/download-artifact@v4
 
+    - name: Prepare Linux asset
+      run: |
+        cd LaTeX-SVG-Converter-Linux
+        tar -czf latex_svg_converter-linux.tar.gz latex_svg_converter/
+
     - name: Upload release assets
       uses: softprops/action-gh-release@v2
       with:
+        tag_name: ${{ github.event_name == 'release' && github.event.release.tag_name || format('build-{0}', github.run_number) }}
+        name: ${{ github.event_name == 'release' && github.event.release.name || format('Build #{0}', github.run_number) }}
+        body: ${{ github.event_name == 'release' && github.event.release.body || 'Automated build artifacts' }}
+        draft: ${{ github.event_name == 'push' }}
+        prerelease: ${{ github.event_name == 'push' }}
         files: |
           LaTeX-SVG-Converter-Windows/LaTeX-SVG-Converter-Windows.zip
           LaTeX-SVG-Converter-macOS/LaTeX-SVG-Converter-macOS.dmg
-          LaTeX-SVG-Converter-Linux/latex_svg_converter
+          LaTeX-SVG-Converter-Linux/latex_svg_converter-linux.tar.gz
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
