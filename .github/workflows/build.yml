@@ -1,0 +1,116 @@
+name: Build and Release
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    - name: Install dependencies
+      run: |
+        python3 -m pip install --upgrade pip
+        python3 -m pip install pyinstaller PySide6
+    - name: Build executable
+      run: python build.py
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: LaTeX-SVG-Converter-Windows
+        path: LaTeX-SVG-Converter-Windows.zip
+
+  build-macos:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    - name: Install dependencies
+      run: |
+        python3 -m pip install --upgrade pip
+        python3 -m pip install pyinstaller PySide6
+    - name: Build executable
+      run: python build.py
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: LaTeX-SVG-Converter-macOS
+        path: LaTeX-SVG-Converter-macOS.dmg
+
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libxcb-xinerama0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-shape0
+        python -m pip install --upgrade pip
+        pip install pyinstaller PySide6
+    - name: Build executable
+      run: python build.py
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: LaTeX-SVG-Converter-Linux
+        path: dist/latex_svg_converter
+
+  release:
+    needs: [build-windows, build-macos, build-linux]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+    - name: Generate version
+      id: version
+      run: |
+        # Generate version based on date and short commit hash
+        VERSION="v$(date +%Y.%m.%d)-${GITHUB_SHA::7}"
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+        echo "Generated version: $VERSION"
+
+    - name: Create Git Tag
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const version = '${{ steps.version.outputs.version }}';
+          try {
+            await github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: `refs/tags/${version}`,
+              sha: context.sha
+            });
+            console.log(`Created tag: ${version}`);
+          } catch (error) {
+            console.log(`Tag ${version} already exists or error:`, error.message);
+          }
+
+    - name: Download all artifacts
+      uses: actions/download-artifact@v4
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: ${{ steps.version.outputs.version }}
+        name: Release ${{ steps.version.outputs.version }}
+        files: |
+          LaTeX-SVG-Converter-Windows/LaTeX-SVG-Converter-Windows.zip
+          LaTeX-SVG-Converter-macOS/LaTeX-SVG-Converter-macOS.dmg
+          LaTeX-SVG-Converter-Linux/latex_svg_converter
+        generate_release_notes: true
+        draft: false
+        prerelease: false
