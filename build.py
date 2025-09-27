@@ -41,7 +41,7 @@ def build_executable():
         "--onedir",  # Create a directory (faster than --onefile)
         "--windowed",  # Don't show console window (for GUI apps)
         "--name=Latex_to_SVG",
-        "--icon=icon.svg",
+        "--icon=icon.png",
         "web_embedder.py"
     ]
 
